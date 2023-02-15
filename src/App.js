@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import React from "react";
+import Card from "./Card";
+import './App.css'
 
-function App() {
+const baseURL = "https://techcrunch.com/wp-json/wp/v2/posts?per_page=20&context=embed";
+
+export default function App() {
+  const [post, setPost] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  
+
+  React.useEffect(() => {
+    axios.get(baseURL).then((response) => {
+      setPost(response.data);
+      setIsLoading(true);
+    });
+  }, []);
+
+  if (!post) return null;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      
+       {isLoading ? post.map((p) => (
+        <a href={p.link} target="_blank"><Card pos={p} key={p.id}></Card></a>
+      )) 
+    :(<h1>Is Loading...</h1>) }
     </div>
   );
 }
-
-export default App;
